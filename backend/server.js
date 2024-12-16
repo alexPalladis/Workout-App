@@ -1,8 +1,8 @@
 require('dotenv').config();
-
+const path = require('path');
+const express = require('express');
 const sequelize = require('./config/sequelize'); 
 const User = require('./models/userModel'); // Import the User model
-
 
 sequelize.authenticate().then(() => {
    
@@ -13,7 +13,6 @@ sequelize.authenticate().then(() => {
 }).catch((error) => {
    console.error('Unable to connect to the database: ', error);
 });
-
 // Sync database
 sequelize.sync({ force: false}) 
   .then(() => {
@@ -21,7 +20,7 @@ sequelize.sync({ force: false})
     
   });
 
-const express = require('express');
+
 const workoutRoutes = require('./routes/workouts');
 const userRoutes = require('./routes/user');
 
@@ -38,7 +37,16 @@ app.use((req,res,next) => {
 
 //routes
 app.use('/api/workouts',workoutRoutes)
-app.use('/api/user',userRoutes)
+app.use('/api/user',userRoutes);
+
+// Serve frontend static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+  });
+}
 
 module.exports = sequelize;
 

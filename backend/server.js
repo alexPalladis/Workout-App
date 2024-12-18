@@ -4,6 +4,7 @@ const express = require('express');
 const sequelize = require('./config/sequelize'); 
 const User = require('./models/userModel'); // Import the User model
 
+
 sequelize.authenticate().then(() => {
    
    //listen for requests

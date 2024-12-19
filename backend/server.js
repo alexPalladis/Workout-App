@@ -6,6 +6,8 @@ const User = require('./models/userModel'); // Import the User model
 
 const PORT = process.env.PORT
 
+//test
+
 sequelize.authenticate().then(() => {
    
    //listen for requests

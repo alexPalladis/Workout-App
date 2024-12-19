@@ -1,12 +1,19 @@
 require('dotenv').config();
+const cors = require('cors');
 const path = require('path');
 const express = require('express');
 const sequelize = require('./config/sequelize'); 
 const User = require('./models/userModel'); // Import the User model
 
 const PORT = process.env.PORT
+const allowedOrigins = ['https://main.dmh0b2wygl91q.amplifyapp.com'];
 
-//test
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
+  credentials: true, 
+}));
+
 
 sequelize.authenticate().then(() => {
    

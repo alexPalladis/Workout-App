@@ -15,7 +15,7 @@ export default function WorkoutDetails({workout}){
             return 
         }
 
-        const response = await fetch('/api/workouts/' + workout.id,{
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/workouts/` + workout.id,{
             method:'DELETE',
             headers:{
                 'Authorization':`Bearer ${user.token}`

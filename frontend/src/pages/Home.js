@@ -13,7 +13,7 @@ export default function Home(){
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            const response = await fetch('/api/workouts',{
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/workouts`,{
                 headers:{
                     'Authorization':`Bearer ${user.token}`
                 }

@@ -43,14 +43,15 @@ app.use((req,res,next) => {
 app.use('/api/workouts',workoutRoutes)
 app.use('/api/user',userRoutes);
 
-// Serve frontend static files in production
-if (process.env.NODE_ENV === 'production') {
+// Serve frontend static files in production to DEPLOY AMPLIFY AWS FRONTEND
+
+/*if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
 
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });
-}
+}*/
 
 module.exports = sequelize;
 

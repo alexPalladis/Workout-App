@@ -4,12 +4,13 @@ const express = require('express');
 const sequelize = require('./config/sequelize'); 
 const User = require('./models/userModel'); // Import the User model
 
+const PORT = process.env.PORT
 
 sequelize.authenticate().then(() => {
    
    //listen for requests
-   app.listen(process.env.PORT,() => {
-   console.log('connected to DB and listening on port',process.env.PORT)
+   app.listen(PORT,() => {
+   console.log('connected to DB and listening on port',PORT)
 })
 }).catch((error) => {
    console.error('Unable to connect to the database: ', error);

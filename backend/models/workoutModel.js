@@ -1,29 +1,16 @@
 require('dotenv').config();
-
 const { Sequelize, DataTypes } = require("sequelize")
-
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-     host: process.env.DB_HOST,
-     dialect: process.env.DB_DIALECT
-  }
-);
-
-   sequelize.authenticate().then(() => {
-    console.log('Connection has been established successfully.');
-    //listen for requests
-    app.listen(process.env.PORT,() => {
-    console.log('connected to DB and listening on port',process.env.PORT)
- })
- }).catch((error) => {
-    console.error('Unable to connect to the database: ', error);
- });
-
- const Workouts = sequelize.define("workouts", {
+const sequelize = new Sequelize(process.env.JAWSDB_URL, {
+  dialect: 'mysql',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // This depends on your database's SSL configuration
+    },
+  },
+});
+ 
+const Workouts = sequelize.define("workouts", {
     title: {
       type: DataTypes.STRING,
       allowNull: false
@@ -42,18 +29,35 @@ const sequelize = new Sequelize(
       references: {
         model: 'users', 
         key: 'id'       
-    }
-
+    },
+    allowNull: false,
   }
-    
- });
+});
 
+// Define the association (if necessary)
+Workouts.associate = (models) => {
+  Workouts.belongsTo(models.User, {
+    foreignKey: 'user_id',
+    as: 'user', // Alias for the relation
+  });
+};
+// Connect to the database and sync models
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
 
- sequelize.sync().then(() => {
-    console.log('Workout table created successfully!');
- }).catch((error) => {
-    console.error('Unable to create table : ', error);
- });
-
- module.exports = sequelize.model('workouts',Workouts);
+    sequelize.sync({ alter: true }) // Use alter:true to ensure the table is updated without data loss
+      .then(() => {
+        console.log('Database synced successfully!');
+      })
+      .catch((error) => {
+        console.error('Unable to sync database:', error);
+      });
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
+  
+module.exports = sequelize.model('workouts',Workouts);
 

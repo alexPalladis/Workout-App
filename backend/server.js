@@ -3,40 +3,41 @@ const cors = require('cors');
 const path = require('path');
 const express = require('express');
 const sequelize = require('./config/sequelize'); 
-const User = require('./models/userModel'); // Import the User model
+const db = require('./models'); // Load all models with associations applied
 
 const PORT = process.env.PORT
 const allowedOrigins = ['https://main.dmh0b2wygl91q.amplifyapp.com'];
 
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
-  credentials: true, 
-}));
-
-
-sequelize.authenticate().then(() => {
-   
+//Connect and sync Database
+sequelize.authenticate().then(async () => {
+  await sequelize.sync({ alter: true }); // Ensures tables are created in the correct order
+  console.log('Connected to DB')
    //listen for requests
-   app.listen(PORT,() => {
-   console.log('connected to DB and listening on port',PORT)
-})
-}).catch((error) => {
+   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+.catch((error) => {
    console.error('Unable to connect to the database: ', error);
 });
-// Sync database
-sequelize.sync({ force: false}) 
-  .then(() => {
-    console.log("Database synced successfully");
-    
-  });
 
 
 const workoutRoutes = require('./routes/workouts');
 const userRoutes = require('./routes/user');
 
-//express app
 const app = express();
+
+//allow CORS policy
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
 //middleware
 app.use(express.json())

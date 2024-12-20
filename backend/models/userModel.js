@@ -6,7 +6,11 @@ const validator = require('validator');
 
 
 
-class User extends Model { 
+class User extends Model {
+  static associate(models) {
+    // Associate User with Workouts
+    User.hasMany(models.Workout, { foreignKey: 'user_id' });
+  }
   // Static signup method
   static async signup(email, password) {
      // validation
@@ -60,10 +64,6 @@ class User extends Model {
 
 }
 
-
-
-
-
 // Initialize the User model
 User.init(
   {
@@ -81,7 +81,7 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', // Explicitly define the table name if needed
+    tableName: 'Users', 
   }
 );
 

@@ -3,15 +3,16 @@ const { Sequelize } = require('sequelize');
 const Workout = require('../models/workoutModel');
 
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-       host: process.env.DB_HOST,
-       dialect: process.env.DB_DIALECT
-    }
-);
+const sequelize = new Sequelize(process.env.JAWSDB_URL, {
+    dialect: 'mysql',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // This depends on your database's SSL configuration
+      },
+    },
+  });
+  
 
 //GET all workouts
 const getWorkouts = async (req, res) => {

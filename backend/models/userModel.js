@@ -3,13 +3,10 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../config/sequelize');
 const validator = require('validator');
 
-
-
-
 class User extends Model {
   static associate(models) {
     // Associate User with Workouts
-    User.hasMany(models.Workout, { foreignKey: 'user_id' });
+    User.hasMany(models.Workout, { foreignKey: 'user_id' , as: 'workouts'});
   }
   // Static signup method
   static async signup(email, password) {
@@ -61,9 +58,7 @@ class User extends Model {
 
    return user;
   }
-
 }
-
 // Initialize the User model
 User.init(
   {
@@ -81,7 +76,7 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', 
+    tableName: 'users', 
   }
 );
 

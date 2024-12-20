@@ -5,19 +5,25 @@ const express = require('express');
 const sequelize = require('./config/sequelize'); 
 const db = require('./models'); // Load all models with associations applied
 
-const PORT = process.env.PORT
+
 const allowedOrigins = ['https://main.dmh0b2wygl91q.amplifyapp.com'];
 
 //Connect and sync Database
-sequelize.authenticate().then(async () => {
-  await sequelize.sync({ alter: true }); // Ensures tables are created in the correct order
-  console.log('Connected to DB')
-   //listen for requests
-   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+db.sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Database connected.');
+    return db.sequelize.sync({ force: false, alter: true }); // Use alter:true for safe schema updates
   })
-.catch((error) => {
-   console.error('Unable to connect to the database: ', error);
-});
+  .then(() => {
+    console.log('Database synced successfully.');
+    app.listen(process.env.PORT || 4000, () => {
+      console.log(`Server running on port ${process.env.PORT || 4000}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Database connection failed:', err);
+  });
 
 
 const workoutRoutes = require('./routes/workouts');

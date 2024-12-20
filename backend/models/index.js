@@ -27,9 +27,16 @@ fs
     );
   })
   .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+    const model = require(path.join(__dirname, file));
+    db[model.name] = model(sequelize, Sequelize.DataTypes);
   });
+
+  // Associations
+const User = db.User || require('./userModel')(sequelize, Sequelize.DataTypes);
+const Workout = db.Workout || require('./workoutModel')(sequelize, Sequelize.DataTypes);
+
+Workout.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Workout, { foreignKey: 'user_id', as: 'workouts' });
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
